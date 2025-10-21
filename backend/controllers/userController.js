@@ -73,7 +73,7 @@ export const verify = async (req, res) =>{
         let decoded;
 
         try {
-            decoded = jwt.verify(token, process.env.SECRET_KEY)
+            decoded = jwt.verify(token, process.env.SECRET_KEY, {expiresIn: "15min"})
         } catch (error) {
             if(error.name === "TokenExpiredError"){
                return res.status(400).json({
@@ -113,3 +113,37 @@ export const verify = async (req, res) =>{
         })
     }
 }
+
+export const reVerify = async(req, res)=>{
+  try {
+    
+    const {email} = req.body;
+    const user = await User.findOne({email})
+  
+    if(!user){
+      return res.status(400).json({
+        success: false,
+        message: "User not found"
+      })
+    }
+  
+    if (!process.env.SECRET_KEY) {
+      return res.status(500).json({ success: false, message: "Server misconfiguration: SECRET_KEY missing" });
+    }
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '15min' })
+    verifyEmail(token, email);
+    user.token = token
+    await user.save()
+    return res.status(200).json({
+      success: true,
+      message: "Verification email sent again successfully",
+      token: user.token
+    })
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+  }
