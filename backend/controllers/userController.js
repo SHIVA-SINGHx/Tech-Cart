@@ -2,14 +2,14 @@ import { User } from "../models/userModel.js";
 
 export const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstname, lastname, email, password } = req.body;
     if (
-      !firstName ||
-      !lastName ||
+      !firstname ||
+      !lastname ||
       !email ||
       !password ||
-      firstName === "" ||
-      lastName === "" ||
+      firstname === "" ||
+      lastname === "" ||
       email === "" ||
       password === ""
     )
@@ -30,8 +30,8 @@ export const register = async (req, res) => {
     //   const hashPassword =
 
     const newuser = await User.create({
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       email,
       password,
     });
