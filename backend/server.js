@@ -7,6 +7,8 @@ import userRoute from "./routes/userRoute.js"
 const app = express()
 const PORT = process.env.PORT
 
+app.use(express.json())
+
 
 app.use("/api/v1/user", userRoute)
 

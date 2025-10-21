@@ -1,4 +1,5 @@
 import { User } from "../models/userModel.js";
+import bcrypt from "bcrypt"
 
 export const register = async (req, res) => {
   try {
@@ -19,7 +20,7 @@ export const register = async (req, res) => {
         message: "All field are required",
       });
 
-    const user = await new User.findOne({ email });
+    const user = await User.findOne({ email })
     if (user) {
       return res.json({
         status: 400,
@@ -27,13 +28,14 @@ export const register = async (req, res) => {
         success: false,
       });
     }
-    //   const hashPassword =
+    
+    const hashPassword = await bcrypt.hash(password, 10)
 
     const newuser = await User.create({
       firstname,
       lastname,
       email,
-      password,
+      password: hashPassword
     });
     await newuser.save();
     return res.status(200).json({
