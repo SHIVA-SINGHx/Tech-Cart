@@ -62,32 +62,30 @@ export const register = async (req, res) => {
 export const verify = async (req, res) =>{
     try {
         const authHeader = req.headers.authorization
-        if(!authHeader || !authHeader.startwith("Bearer ")){
+        if(!authHeader || !authHeader.startsWith("Bearer ")){
             return res.status(400).json({
                 success: false,
                 message: "Authorization token is missing"
             })
+        }
 
-            const token = authHeader.split(" ")[1]
+        const token = authHeader.split(" ")[1]
+        let decoded;
 
-            let decoded;
-
-            try {
-                decoded = jwt.verify(token, process.env.SECRET_KEY)
-            } catch (error) {
-                if(error.name === "TokenExpiredError"){
-                   return res.status(400).json({
-                        success: false,
-                        message: "The registration token has expired"
-                    })
-                }
-
-                return res.status(400).json({
+        try {
+            decoded = jwt.verify(token, process.env.SECRET_KEY)
+        } catch (error) {
+            if(error.name === "TokenExpiredError"){
+               return res.status(400).json({
                     success: false,
-                    message:"Token verification failed"
+                    message: "The registration token has expired"
                 })
             }
-   
+
+            return res.status(400).json({
+                success: false,
+                message:"Token verification failed"
+            })
         }
 
         const user = await User.findById(decoded.id)
