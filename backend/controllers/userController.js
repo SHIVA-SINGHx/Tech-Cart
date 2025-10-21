@@ -1,5 +1,8 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import "dotenv/config"
+import { verifyEmail } from "../emailVerify/email.js";
 
 export const register = async (req, res) => {
   try {
@@ -37,6 +40,11 @@ export const register = async (req, res) => {
       email,
       password: hashPassword
     });
+
+    const token = jwt.sign({id: newuser._id}, process.env.SECRET_KEY, {expiresIn: "3hr"});
+    verifyEmail(token, email) // send the email verification 
+    newuser.token = token
+
     await newuser.save();
     return res.status(200).json({
       success: true,
@@ -50,3 +58,60 @@ export const register = async (req, res) => {
     });
   }
 };
+
+export const verify = async (req, res) =>{
+    try {
+        const authHeader = req.headers.authorization
+        if(!authHeader || !authHeader.startwith("Bearer ")){
+            return res.status(400).json({
+                success: false,
+                message: "Authorization token is missing"
+            })
+
+            const token = authHeader.split(" ")[1]
+
+            let decoded;
+
+            try {
+                decoded = jwt.verify(token, process.env.SECRET_KEY)
+            } catch (error) {
+                if(error.name === "TokenExpiredError"){
+                   return res.status(400).json({
+                        success: false,
+                        message: "The registration token has expired"
+                    })
+                }
+
+                return res.status(400).json({
+                    success: false,
+                    message:"Token verification failed"
+                })
+            }
+   
+        }
+
+        const user = await User.findById(decoded.id)
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: "User not found"
+
+            })
+        }
+        user.token = null,
+        user.isVerified = true
+        await user.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Email verified successfully"
+
+        })
+
+    } catch (error) {
+       return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
