@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import "dotenv/config"
 import { verifyEmail } from "../emailVerify/email.js";
+import { Session } from "../models/sessionModel.js";
 
 export const register = async (req, res) => {
   try {
@@ -147,3 +148,68 @@ export const reVerify = async(req, res)=>{
     })
   }
   }
+
+export const login = async (req, res) =>{
+  try {
+    const {email, password} = req.body;
+    if(!email || !password || email === "" || password === ""){
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required"
+      })
+
+      const existingUser = await User.findOne({email});
+      if(!existingUser){
+        return res.status(400).json({
+          success: false,
+          message: "User not exists"
+        })
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+      if(!isPasswordValid){
+        return res.status(400).json({
+          success: false,
+          message: "Invalid credentials"
+        })
+      }
+
+      if(existingUser.isLoggedIn === false){
+        return res.status(400).json({
+          success: false,
+          message: "Verify your account than login"
+        })
+      }
+
+      // generate token
+      const accessToken = jwt.sign({id: existingUser._id}, process.env.SECRET_KEY, {expiresIn: '10d'})
+      const refreshToken = jwt.sign({id: existingUser._id}, process.env.SECRET_KEY, {expiresIn: '30d'})
+
+      existingUser.isLoggedIn = true;
+      await existingUser.save();
+
+      // Check for existing session and dlt it
+
+      const existingSession = await Session.findOne({userId: existingUser._id})
+      if(!existingSession){
+        await Session.deleteOne({userId: existingUser._id})
+      }
+
+      // create a new session
+      await Session.create({userId: existingUser._id})
+      return res.status(200).json({
+        success: true,
+        message: `Welcome ${existingUser.firstname}`,
+        refreshToken,
+        accessToken,
+        user: existingUser
+      })
+    }
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
