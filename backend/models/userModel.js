@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    firstname: {
       type: String,
       require: true,
     },
-    lastName: {
+    lastname: {
       type: String,
       require: true,
     },
@@ -37,11 +37,11 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     isVerified: {
-      Boolean: false,
+      type: Boolean,
       default: null,
     },
     isLoggedIn: {
-      Boolean: false,
+      type: Boolean,
       default: null,
     },
     address: {
