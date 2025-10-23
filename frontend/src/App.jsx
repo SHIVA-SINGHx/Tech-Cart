@@ -4,6 +4,7 @@ const App = () => {
   return (
     <div className='bg-red-50'>
       this is home page
+      
     </div>
   )
 }
