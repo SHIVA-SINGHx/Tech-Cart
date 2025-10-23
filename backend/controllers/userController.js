@@ -267,3 +267,59 @@ export const forgotPassword = async (req, res) =>{
 
 
 }
+
+export const verifyOTP = async (req, res) =>{
+  try {
+    const otp = req.body
+    const {email} = req.params.email
+    if(!otp){
+      return res.status(400).json({
+        success: false,
+        message: "Otp is required"
+      })
+    }
+
+    const user = await User.findOne({email})
+    if(!user){
+      return res.status(400).json({
+        success: false,
+        message: 'User not found'
+      })
+    }
+
+    if(!user.otp || !user.otpExpiry){
+      return res.status(400).json({
+        success: false,
+        message: 'Otp is not generated or already verified'
+      })
+    }
+
+    if(!user.otp < new Date()){
+      return res.status(400).json({
+        success: false,
+        message: 'Otp has epxired please generate new one'
+      })
+    }
+    
+    if(otp !== user.otp){
+      return res.status(400).json({
+        success: false,
+        message: 'Otp is invalid'
+      })
+    }
+
+    user.otp = null
+    user.otpExpiry = null
+    await user.save()
+    return res.status(200).json({
+      success: true,
+      message: 'Otp verified successfully'
+    })
+    
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
