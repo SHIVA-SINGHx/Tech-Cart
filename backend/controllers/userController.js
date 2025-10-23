@@ -232,3 +232,38 @@ export const logout = async (req, res) =>{
     })
   }
 }
+
+export const forgotPassword = async (req, res) =>{
+
+  try {
+    const {email} = req.body
+    const user = await User.findOne({email})
+  
+    if(!user){
+      return res.status(400).json({
+        success: false,
+        message: 'User not found'
+      })
+    }
+  
+    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    const otpExpiry = new Date(Date.now() + 10*60*1000) //10min
+    user.otp = otp
+    user.otpExpiry = otpExpiry
+  
+    await user.save()
+    await sentOtpMail(otp, email)
+    return res.status(200).json({
+      success: true,
+      message: 'Otp sent successfully on your email'
+    })
+    
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+
+
+}
