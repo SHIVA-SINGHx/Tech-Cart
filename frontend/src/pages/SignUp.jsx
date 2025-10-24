@@ -39,28 +39,40 @@ const SignUp = () => {
     
   }
   
-  const submitHandler = async (e)=>{
+  const submitHandler = async (e) => {
     e.preventDefault()
-    console.log(formData);
     try {
       setLoading(true)
       const res = await axios.post(`http://localhost:8082/api/v1/user/register`, formData, {
-        headers:{
+        headers: {
           'Content-Type': "application/json"
         }
       })
-      if(res.data.success){
+      
+      if (res.data.success) {
         nagivate('/verify')
         toast.success(res.data.message)
+      } else {
+        // Handle unsuccessful response
+        toast.error(res.data.message)
       }
+      
     } catch (error) {
-     console.log(error);
-     toast.error(error.res.data.message)
-     
-    } finally{
+      // Improved error handling
+      if (error.response) {
+        // Server responded with error
+        toast.error(error.response.data.message || 'Registration failed')
+      } else if (error.request) {
+        // Request made but no response
+        toast.error('No response from server. Please try again.')
+      } else {
+        // Other errors
+        toast.error('Something went wrong. Please try again.')
+      }
+      console.error('Registration error:', error)
+    } finally {
       setLoading(false)
     }
-    
   }
 
   return (
@@ -74,7 +86,7 @@ const SignUp = () => {
         </CardHeader>
 
     
-        <form onSubmit={submitHandler}>
+        <form >
           <CardContent>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">

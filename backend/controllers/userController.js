@@ -52,7 +52,7 @@ export const register = async (req, res) => {
     await newuser.save();
     return res.status(200).json({
       success: true,
-      message: "User registred successfully",
+      message: "User registered successfully",
       user: newuser,
     });
   } catch (error) {
@@ -166,7 +166,7 @@ export const login = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    console.log("User verification status:", existingUser.isVerified); // Add this debug line
+    console.log("User verification status:", existingUser.isVerified); 
 
     if (!existingUser) {
       return res.status(400).json({
@@ -219,7 +219,7 @@ export const login = async (req, res) => {
     await Session.create({ userId: existingUser._id });
     return res.status(200).json({
       success: true,
-      message: `Welcome ${existingUser.firstname}`,
+      message: `Welcome ${existingUser.firstName}`,
       refreshToken,
       accessToken,
       user: existingUser,

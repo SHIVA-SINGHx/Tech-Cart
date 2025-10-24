@@ -37,28 +37,39 @@ const Login = () => {
     
   }
   
-  const submitHandler = async (e)=>{
+  const submitHandler = async (e) => {
     e.preventDefault()
-    console.log(formData);
     try {
       setLoading(true)
-      const res = await axios.post(`http://localhost:8082/api/v1/user/login`, formData, {
-        headers:{
+      const res = await axios.post(`http://localhost:8082/api/v1/user/register`, formData, {
+        headers: {
           'Content-Type': "application/json"
         }
       })
-      if(res.data.success){
-        nagivate('/')
+      
+      if (res.data.success) {
+        nagivate('/verify')
         toast.success(res.data.message)
+      } else {
+        toast.error(res.data.message)
       }
+      
     } catch (error) {
-     console.log(error);
-     toast.error(error.res.data.message)
+  
+      if (error.response) {
+  
+        toast.error(error.response.data.message || 'Registration failed')
+      } else if (error.request) {
+      
+        toast.error('No response from server. Please try again.')
+      } else {
      
-    } finally{
+        toast.error('Something went wrong. Please try again.')
+      }
+      console.error('Registration error:', error)
+    } finally {
       setLoading(false)
     }
-    
   }
 
   return (
@@ -128,7 +139,7 @@ const Login = () => {
 
           <CardFooter className="flex-col gap-2">
             <Button type="submit" onClick={submitHandler} className="w-full">
-              {loading ? <><Loader/>Please wait</> : 'SignUp'}
+              {loading ? <><Loader/>Please wait</> : 'Login'}
             </Button>
             <p>Don't have an account? <Link to={'/signup'} className="hover:underline cursor-pointer text-pink-400 ">SignUp</Link></p>
           </CardFooter>
