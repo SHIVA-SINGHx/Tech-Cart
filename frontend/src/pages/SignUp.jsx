@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from 'lucide-react';
 import axios from "axios";
+import { toast } from "sonner";
 
 
 const SignUp = () => {
@@ -25,22 +26,36 @@ const SignUp = () => {
     email: "",
     password: ""
   })
-
-  nagivate = useNavigate()
-
+  
+  const nagivate = useNavigate()
+  
   const handleChange = (e)=>{
     const {name, value} = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value
     }))
-
+    
   }
-
+  
   const submitHandler = async (e)=>{
     e.preventDefault()
     console.log(formData);
-
+    try {
+      const res = await axios.post(`http://localhost:8082/api/v1/user/register`, formData, {
+        headers:{
+          'Content-Type': "application/json"
+        }
+      })
+      if(res.data.success){
+        nagivate('/verify')
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+     console.log(error);
+     toast.error(error.response.data.message)
+     
+    }
     
   }
 
@@ -135,7 +150,7 @@ const SignUp = () => {
           </CardContent>
 
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
+            <Button type="submit" onClick={submitHandler} className="w-full">
               SignUp
             </Button>
             <p>Already have an account? <Link to={'/login'} className="hover:underline cursor-pointer text-pink-400 ">login</Link></p>

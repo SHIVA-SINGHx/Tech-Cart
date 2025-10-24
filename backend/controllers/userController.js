@@ -8,14 +8,14 @@ import { sentOtpMail } from "../emailVerify/sentOtpMail.js";
 
 export const register = async (req, res) => {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
     if (
-      !firstname ||
-      !lastname ||
+      !firstName ||
+      !lastName ||
       !email ||
       !password ||
-      firstname === "" ||
-      lastname === "" ||
+      firstName === "" ||
+      lastName === "" ||
       email === "" ||
       password === ""
     )
@@ -37,8 +37,8 @@ export const register = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const newuser = await User.create({
-      firstname,
-      lastname,
+      firstName,
+      lastName,
       email,
       password: hashPassword,
     });
