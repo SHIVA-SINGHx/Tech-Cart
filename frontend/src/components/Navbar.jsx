@@ -184,7 +184,7 @@ const Navbar = () => {
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     {user ? (
-                                        <Button className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'>
+                                        <Button onClick={logoutHandler} className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'>
                                             Logout
                                         </Button>
                                     ) : (
