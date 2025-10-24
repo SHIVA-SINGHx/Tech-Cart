@@ -5,7 +5,7 @@ const Hero = () => {
     <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16 md:py-24">
       <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-12 gap-10">
         
-        {/* 🟦 Left Content */}
+        {/*  Left Content */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-6 md:w-1/2">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
             Latest Electronics at <br className="hidden md:block" /> Best Prices
@@ -24,7 +24,7 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* 🟪 Right Image */}
+        {/* Right Image */}
         <div className="md:w-1/2 flex justify-center md:justify-end">
           <div className="relative w-[280px] sm:w-[340px] md:w-[420px] lg:w-[480px]">
             <img
@@ -33,14 +33,13 @@ const Hero = () => {
               className="w-full h-auto object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
-            {/* Shadow/Glow effect */}
+           
             <div className="absolute inset-0 bg-gradient-to-t from-purple-700/30 to-transparent rounded-3xl blur-2xl -z-10"></div>
           </div>
         </div>
 
       </div>
 
-      {/* Optional Decorative Blur at bottom */}
       <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-purple-700/20 to-transparent pointer-events-none"></div>
     </section>
   );

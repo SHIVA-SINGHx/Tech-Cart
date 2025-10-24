@@ -8,13 +8,14 @@ import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import Verify from './pages/Verify'
 import VerifyEmail from './pages/VerifyEmail'
+import Footer from './components/Footer'
 
 
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <><Navbar/> <Home/> </>
+    element: <><Navbar/> <Home/> <Footer/> </>
   },
   {
     path: '/signup',
