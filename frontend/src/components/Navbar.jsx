@@ -3,13 +3,31 @@ import { Drone, ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 
 const Navbar = () => {
     const user = false;
     const [isOpen, setIsOpen] = useState(false);
-
     const toggleMenu = () => setIsOpen(!isOpen);
+    const accessToken = localStorage.getItem('accessToken')
+
+    const logoutHandler = async()=>{
+        try {
+            const res = await axios.post(`http://localhost:8082/api/v1/user/logout`, {}, {
+                headers:{
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+            if(res.data.success){
+                toast.success(res.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
 
     return (
         <header className='bg-gradient-to-r from-pink-50 to-purple-50 fixed w-full z-20 border-b border-pink-200 backdrop-blur-sm'>
