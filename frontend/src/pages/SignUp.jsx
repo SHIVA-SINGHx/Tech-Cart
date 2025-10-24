@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -20,6 +20,7 @@ import { toast } from "sonner";
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [passwordFocused, setPasswordFocused] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -42,6 +43,7 @@ const SignUp = () => {
     e.preventDefault()
     console.log(formData);
     try {
+      setLoading(true)
       const res = await axios.post(`http://localhost:8082/api/v1/user/register`, formData, {
         headers:{
           'Content-Type': "application/json"
@@ -53,8 +55,10 @@ const SignUp = () => {
       }
     } catch (error) {
      console.log(error);
-     toast.error(error.response.data.message)
+     toast.error(error.res.data.message)
      
+    } finally{
+      setLoading(false)
     }
     
   }
@@ -151,7 +155,7 @@ const SignUp = () => {
 
           <CardFooter className="flex-col gap-2">
             <Button type="submit" onClick={submitHandler} className="w-full">
-              SignUp
+              {loading ? <><Loader/>Please wait</> : 'SignUp'}
             </Button>
             <p>Already have an account? <Link to={'/login'} className="hover:underline cursor-pointer text-pink-400 ">login</Link></p>
           </CardFooter>

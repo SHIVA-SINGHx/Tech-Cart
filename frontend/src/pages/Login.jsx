@@ -11,32 +11,53 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff } from 'lucide-react';
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Loader } from 'lucide-react';
+import axios from "axios";
+import { toast } from "sonner";
 
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [passwordFocused, setPasswordFocused] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
     password: ""
   })
-
+  
+  const nagivate = useNavigate()
+  
   const handleChange = (e)=>{
     const {name, value} = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value
     }))
-
+    
   }
-
+  
   const submitHandler = async (e)=>{
     e.preventDefault()
     console.log(formData);
+    try {
+      setLoading(true)
+      const res = await axios.post(`http://localhost:8082/api/v1/user/login`, formData, {
+        headers:{
+          'Content-Type': "application/json"
+        }
+      })
+      if(res.data.success){
+        nagivate('/')
+        toast.success(res.data.message)
+      }
+    } catch (error) {
+     console.log(error);
+     toast.error(error.res.data.message)
+     
+    } finally{
+      setLoading(false)
+    }
     
   }
 
@@ -50,11 +71,9 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
 
-    
         <form onSubmit={submitHandler}>
           <CardContent>
               <div className="flex flex-col gap-6">
-
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -108,10 +127,10 @@ const Login = () => {
           </CardContent>
 
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
-              SignUp
+            <Button type="submit" onClick={submitHandler} className="w-full">
+              {loading ? <><Loader/>Please wait</> : 'SignUp'}
             </Button>
-            <p>Already have an account? <Link to={'/login'} className="hover:underline cursor-pointer text-pink-400 ">login</Link></p>
+            <p>Don't have an account? <Link to={'/signup'} className="hover:underline cursor-pointer text-pink-400 ">SignUp</Link></p>
           </CardFooter>
         </form>
       </Card>
