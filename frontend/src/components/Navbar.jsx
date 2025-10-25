@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '@/redux/userSlice'
+import { logout, setUser } from '@/redux/userSlice'
 
 
 const Navbar = () => {
@@ -16,19 +16,20 @@ const Navbar = () => {
     const toggleMenu = () => setIsOpen(!isOpen);
     const accessToken = localStorage.getItem('accessToken')
 
-    const logoutHandler = async()=>{
+    const logoutHandler = async () => {
         try {
             const res = await axios.post(`http://localhost:8082/api/v1/user/logout`, {}, {
-                headers:{
+                headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
             })
-            if(res.data.success){
+            if (res.data.success) {
+                dispatch(logout()) // This will clear both localStorage and Redux state
                 toast.success(res.data.message)
             }
         } catch (error) {
             console.log(error);
-            
+            toast.error('Logout failed')
         }
     }
 
@@ -91,7 +92,7 @@ const Navbar = () => {
                                 whileTap={{ scale: 0.95 }}
                             >
                                 <Link to='/profile' className='text-gray-700 hover:text-pink-600 transition-colors'>
-                                    Hello User
+                                    Hello, {user.firstName}
                                 </Link>
                             </motion.li>
                         )}

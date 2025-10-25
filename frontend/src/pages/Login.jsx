@@ -43,11 +43,7 @@ const Login = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const res = await axios.post(`http://localhost:8082/api/v1/user/login`, formData, {
-        headers: {
-          'Content-Type': "application/json"
-        }
-      })
+      const res = await axios.post(`http://localhost:8082/api/v1/user/login`, formData)
       
       if (res.data.success) {
         // Save token to localStorage

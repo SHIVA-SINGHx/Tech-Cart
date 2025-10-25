@@ -9,36 +9,37 @@ import Login from './pages/Login'
 import Verify from './pages/Verify'
 import VerifyEmail from './pages/VerifyEmail'
 import Footer from './components/Footer'
-
-
+import AuthPersist from './components/AuthPersisit'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <><Navbar/> <Home/> <Footer/> </>
+    element: <><Navbar/> <Home/> <Footer/> </>,
   },
   {
     path: '/signup',
-    element: <SignUp/>
+    element: <SignUp/>,
   },
   {
     path: '/login',
-    element: <Login/>
+    element: <Login/>,
   },
   {
     path: '/verify',
-    element: <Verify/>
+    element: <Verify/>,
   },
   {
     path: '/verify/:token',
-    element: <VerifyEmail/>
+    element: <VerifyEmail/>,
   },
-
 ])
 
 const App = () => {
   return (
-    <RouterProvider router={router}/>
+    <>
+      <AuthPersist />
+      <RouterProvider router={router} />
+    </>
   )
 }
 
