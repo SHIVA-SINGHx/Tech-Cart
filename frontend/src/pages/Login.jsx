@@ -15,7 +15,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import axios from "axios";
 import { toast } from "sonner";
-
+import { useDispatch } from "react-redux";
+import { setUser, setAccessToken, } from "../redux/userSlice";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -27,6 +28,7 @@ const Login = () => {
   })
   
   const nagivate = useNavigate()
+  const dispatch = useDispatch()
   
   const handleChange = (e)=>{
     const {name, value} = e.target;
@@ -41,32 +43,35 @@ const Login = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const res = await axios.post(`http://localhost:8082/api/v1/user/register`, formData, {
+      const res = await axios.post(`http://localhost:8082/api/v1/user/login`, formData, {
         headers: {
           'Content-Type': "application/json"
         }
       })
       
       if (res.data.success) {
-        nagivate('/verify')
+        // Save token to localStorage
+        localStorage.setItem('accessToken', res.data.accessToken)
+        
+        // Update Redux state
+        dispatch(setUser(res.data.user))
+        dispatch(setAccessToken(res.data.accessToken))
+        
         toast.success(res.data.message)
+        nagivate('/')
       } else {
         toast.error(res.data.message)
       }
       
     } catch (error) {
-  
       if (error.response) {
-  
-        toast.error(error.response.data.message || 'Registration failed')
+        toast.error(error.response.data.message || 'Login failed')
       } else if (error.request) {
-      
         toast.error('No response from server. Please try again.')
       } else {
-     
         toast.error('Something went wrong. Please try again.')
       }
-      console.error('Registration error:', error)
+      console.error('Login error:', error)
     } finally {
       setLoading(false)
     }

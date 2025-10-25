@@ -5,10 +5,13 @@ import { Button } from './ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '@/redux/userSlice'
 
 
 const Navbar = () => {
-    const user = false;
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => state.user)
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen(!isOpen);
     const accessToken = localStorage.getItem('accessToken')
@@ -119,7 +122,7 @@ const Navbar = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            <Button className='bg-gradient-to-r from-pink-600 to-purple-600 text-white hover:opacity-90 transition-opacity'>
+                            <Button onClick={logoutHandler} className='bg-gradient-to-r from-pink-600 to-purple-600 text-white hover:opacity-90 transition-opacity'>
                                 Logout
                             </Button>
                         </motion.div>
