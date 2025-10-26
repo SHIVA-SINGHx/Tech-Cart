@@ -100,6 +100,9 @@ const Profile = () => {
                                 </div>
 
                             </div>
+                                <Button type='submit' className='w-full mt-4 bg-pink-500 hover:bg-pink-700 text-white font-semibold py-2 rounded-lg'>
+                                    Update Profile
+                                </Button>
                         </form>
                     </div>
                 </div>
