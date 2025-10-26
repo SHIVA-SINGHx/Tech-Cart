@@ -10,6 +10,7 @@ import Verify from './pages/Verify'
 import VerifyEmail from './pages/VerifyEmail'
 import Footer from './components/Footer'
 import AuthPersist from './components/AuthPersisit'
+import Profile from './pages/Profile'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: '/verify/:token',
     element: <VerifyEmail/>,
+  },
+  {
+    path: '/profile',
+    element: <> <Navbar/><Profile/>,</>
   },
 ])
 

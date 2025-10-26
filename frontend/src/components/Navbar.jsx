@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Drone, ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen(!isOpen);
     const accessToken = localStorage.getItem('accessToken')
+    const navigate = useNavigate()
 
     const logoutHandler = async () => {
         try {
@@ -26,6 +27,7 @@ const Navbar = () => {
             if (res.data.success) {
                 dispatch(logout()) // This will clear both localStorage and Redux state
                 toast.success(res.data.message)
+                navigate('/login')
             }
         } catch (error) {
             console.log(error);
@@ -188,9 +190,12 @@ const Navbar = () => {
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     {user ? (
+                                        <Link to={'/login'}>
                                         <Button onClick={logoutHandler} className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'>
                                             Logout
                                         </Button>
+                                        
+                                        </Link>
                                     ) : (
                                         <Link to='/login'>
                                             <Button className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'>
