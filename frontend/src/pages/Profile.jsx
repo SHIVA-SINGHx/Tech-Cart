@@ -37,7 +37,7 @@ const Profile = () => {
                     <div className='w-full flex gap-10 justify-between items-start px-7 max-w-2xl'>
                         {/* profile image */}
                         <div className='flex flex-col items-center'>
-                            <img src="/main.jpg" alt="profile" className='w-32 h-32 rounded-full object-cover border-4 border-blue-500'/>
+                            <img src="/main2.jpg" alt="profile" className='w-32 h-32 rounded-full object-cover border-4 border-blue-500'/>
                             <Label className='mt-4 cursor-pointer bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-700 '> Change Picture
                                 <input type="file" accept='image/*' className='hidden' />
                             </Label>
@@ -74,6 +74,7 @@ const Profile = () => {
                                     <input 
                                     type="text" 
                                     name='phoneNo' 
+                                    placeholder='+91'
                                     className='w-full border rounded-lg px-3 py-2 mt-1 bg-gray-100 cursor-not-allowed' />
                                 </div>
     
@@ -107,7 +108,6 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-
         </TabsContent>
         <TabsContent value="orders">
           <Card>
