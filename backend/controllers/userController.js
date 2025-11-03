@@ -418,3 +418,39 @@ export const getUserById = async (req, res) =>{
     })
   }
 }
+
+export const updateUser = async (req, res)=>{
+  try {
+    const userIdToUpdate = req.params.id
+    const loggedInUser = req.user // from authenticated middleware
+    const {firstName, lastName, address, city, zipCode, phoneNo, role} = req.body
+
+    if(loggedInUser._id.toString() !== userIdToUpdate && loggedInUser.role !== "admin"){
+
+      return res.status(403).json({
+        success: false,
+        message: "You are not allow to this profile"
+      })
+    }
+
+    let user = await User.findById(userIdToUpdate);
+    if(!user){
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      })
+    }
+
+    const profilePicUrl = user.ProfileImage
+    
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+
+
+
+
+}
