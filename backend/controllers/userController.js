@@ -5,6 +5,7 @@ import "dotenv/config";
 import { verifyEmail } from "../emailVerify/email.js";
 import { Session } from "../models/sessionModel.js";
 import { sentOtpMail } from "../emailVerify/sentOtpMail.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
@@ -423,7 +424,7 @@ export const updateUser = async (req, res)=>{
   try {
     const userIdToUpdate = req.params.id
     const loggedInUser = req.user // from authenticated middleware
-    const {firstName, lastName, address, city, zipCode, phoneNo, role} = req.body
+    const {firstName, lastName, address, city, zipcode, phoneNo, role} = req.body
 
     if(loggedInUser._id.toString() !== userIdToUpdate && loggedInUser.role !== "admin"){
 
@@ -441,7 +442,48 @@ export const updateUser = async (req, res)=>{
       })
     }
 
-    const profilePicUrl = user.ProfileImage
+    const profilePicUrl = user.ProfileImage;
+    const profilePicPublicId = user.profilePicPublicId
+
+    if(req.file){
+      if(profilePicPublicId){
+        await cloudinary.uploader.destroy(profilePicPublicId)
+      }
+
+      const uploadRes = await new Promise((resolve, reject)=>{
+        const stream = cloudinary.uploader.upload_stream(
+          {folder: "profile"},
+          (error, result) =>{
+            if(error) reject(error)
+              else resolve(result)
+          }
+        )
+        stream.end(req.file.buffer)
+      })
+      const profilePicUrl = uploadRes.secure_url;
+      const profilePicPublicId = uploadRes.public_id
+    }
+
+    // update fields
+
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.address = address || user.address;
+    user.city = city|| user.city;
+    user.zipcode = zipcode || user.zipcode;
+    user.PhoneNo = PhoneNo|| user.PhoneNo;
+    user.firstName = firstName || user.firstName;
+    user.role = role;
+    user.profilePic = profilePicUrl;
+    user.profilePicPublicId= profilePicPublicId;
+
+    const updateUser = await user.save()
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+      user: updateUser
+    })
     
   } catch (error) {
     return res.status(500).json({
