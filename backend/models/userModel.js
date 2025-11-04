@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema(
     zipCode: {
       type: Number,
     },
-    PhoneNo: {
+   phoneNo: {
       type: Number,
     },
     Otp: {

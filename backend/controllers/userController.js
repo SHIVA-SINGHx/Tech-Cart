@@ -420,79 +420,77 @@ export const getUserById = async (req, res) =>{
   }
 }
 
-export const updateUser = async (req, res)=>{
+export const updateUser = async (req, res) => {
   try {
-    const userIdToUpdate = req.params.id
-    const loggedInUser = req.user // from authenticated middleware
-    const {firstName, lastName, address, city, zipcode, phoneNo, role} = req.body
+    const userIdToUpdate = req.params.id;
+    const loggedInUser = req.user; // from authenticated middleware
+    const { firstName, lastName, address, city, zipCode, phoneNo, role } = req.body;
 
-    if(loggedInUser._id.toString() !== userIdToUpdate && loggedInUser.role !== "admin"){
-
+    // Authorization check
+    if (loggedInUser._id.toString() !== userIdToUpdate && loggedInUser.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "You are not allow to this profile"
-      })
+        message: "You are not allowed to update this profile",
+      });
     }
 
     let user = await User.findById(userIdToUpdate);
-    if(!user){
+    if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
-      })
+        message: "User not found",
+      });
     }
 
-    const profilePicUrl = user.ProfileImage;
-    const profilePicPublicId = user.profilePicPublicId
+    // Keep existing images
+    let profilePicUrl = user.profilePic;
+    let profilePicPublicId = user.profilePicPublicId;
 
-    if(req.file){
-      if(profilePicPublicId){
-        await cloudinary.uploader.destroy(profilePicPublicId)
+    // If new file uploaded
+    if (req.file) {
+      if (profilePicPublicId) {
+        await cloudinary.uploader.destroy(profilePicPublicId);
       }
 
-      const uploadRes = await new Promise((resolve, reject)=>{
+      const uploadRes = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          {folder: "profile"},
-          (error, result) =>{
-            if(error) reject(error)
-              else resolve(result)
+          { folder: "profile" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
           }
-        )
-        stream.end(req.file.buffer)
-      })
-      const profilePicUrl = uploadRes.secure_url;
-      const profilePicPublicId = uploadRes.public_id
+        );
+        stream.end(req.file.buffer);
+      });
+
+      profilePicUrl = uploadRes.secure_url;
+      profilePicPublicId = uploadRes.public_id;
     }
 
-    // update fields
-
+    // Update fields
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
     user.address = address || user.address;
-    user.city = city|| user.city;
+    user.city = city || user.city;
     user.zipCode = zipCode || user.zipCode;
-    user.PhoneNo = PhoneNo|| user.PhoneNo;
-    user.firstName = firstName || user.firstName;
-    user.role = role;
+    user.phoneNo = phoneNo || user.phoneNo; // ✅ fixed name
+    user.role = role || user.role;
     user.profilePic = profilePicUrl;
-    user.profilePicPublicId= profilePicPublicId;
+    user.profilePicPublicId = profilePicPublicId;
 
-    const updateUser = await user.save()
+    const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
-      message: "Profile Updated Successfully",
-      user: updateUser
-    })
-    
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+
   } catch (error) {
+    console.error("Error in updateUser:", error.message);
     return res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-
-
-
-
-}
+};
