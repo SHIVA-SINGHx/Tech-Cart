@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     element: <VerifyEmail/>,
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     element: <> <Navbar/><Profile/>,</>
   },
 ])

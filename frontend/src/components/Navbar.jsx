@@ -93,7 +93,7 @@ const Navbar = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                <Link to='/profile' className='text-gray-700 hover:text-pink-600 transition-colors'>
+                                <Link to={`/profile/${user._id}`} className='text-gray-700 hover:text-pink-600 transition-colors'>
                                     Hello, {user.firstName}
                                 </Link>
                             </motion.li>
@@ -171,7 +171,7 @@ const Navbar = () => {
                                     <motion.li
                                         whileTap={{ scale: 0.95 }}
                                     >
-                                        <Link to='/profile' className='text-gray-700 hover:text-pink-600 transition-colors block'>
+                                        <Link to={`/profile/${user._id}`}className='text-gray-700 hover:text-pink-600 transition-colors block'>
                                             Profile
                                         </Link>
                                     </motion.li>

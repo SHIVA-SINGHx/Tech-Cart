@@ -19,10 +19,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+// import { useParams } from 'react-router-dom'
 
 
 
 const Profile = () => {
+  // const params = useParams()
+  // // const userId = params.userId
+
   return (
     <div className='pt-20 min-h-screen bg-gray-100 flex items-center justify-center'>
             <Tabs defaultValue="profile">
