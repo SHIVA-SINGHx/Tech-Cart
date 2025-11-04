@@ -18,9 +18,12 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { store } from '@/redux/store.js'
 import userlogo from "@/assets/user.avif"
+import { toast } from 'sonner'
+import axios from 'axios'
+import { setUser } from '@/redux/userSlice'
 
 
 
@@ -42,7 +45,7 @@ const Profile = () => {
   })
 
   const [file, setFile]= useState(null)
-
+  const dispatch = useDispatch()
 
   const handleChange = (e) =>{
     setUpdateUser({...updateUser, [e.target.name]: e.target.value})
@@ -55,10 +58,42 @@ const Profile = () => {
 
   const handleSubmit = async (e) =>{
     e.preventDefault()
-    console.log(updateUser);
-    
-  }
+    const accessToken = localStorage.getItem("accessToken")
 
+    try {
+      const formData = new FormData()
+      formData.append("firstName", updateUser.firstName),
+      formData.append("lastName", updateUser.lastName),
+      formData.append("email", updateUser.email),
+      formData.append("address", updateUser.address),
+      formData.append("city", updateUser.city),
+      formData.append("zipCode", updateUser.zipCode),
+      formData.append("phoneNo", updateUser.phoneNo),
+      formData.append("role", updateUser.role)
+
+      if(file){
+        formData.append("file", file)
+      }
+
+      const res = await axios.put(`http://localhost:8082/api/v1/user/update/${userId}}`, formData,{
+        headers:{
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data"
+        }
+      })
+      if(res.status.success){
+        toast.success(res.data.message)
+        console.log("Updated Sucessfully");
+        dispatch(setUser(res.data.user))
+        
+      }
+
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update this profile")  
+    }
+ 
+  }
 
   return (
     <div className='pt-20 min-h-screen bg-gray-100 flex items-center justify-center'>

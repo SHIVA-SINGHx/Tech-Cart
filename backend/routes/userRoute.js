@@ -15,6 +15,6 @@ router.post("/verify-otp/:email", verifyOTP)
 router.post("/change-password/:email", changePassword)
 router.get("/all-user", isAuthenticated, isAdmin, allUser)
 router.get("/get-user/:userId", getUserById)
-router.put("/update/:id", isAuthenticated, singleUpload, updateUser )
+router.put("/update/:id", isAuthenticated, singleUpload, updateUser)
 
 export default router
