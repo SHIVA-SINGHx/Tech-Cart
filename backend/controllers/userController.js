@@ -470,7 +470,7 @@ export const updateUser = async (req, res)=>{
     user.lastName = lastName || user.lastName;
     user.address = address || user.address;
     user.city = city|| user.city;
-    user.zipcode = zipcode || user.zipcode;
+    user.zipCode = zipCode || user.zipCode;
     user.PhoneNo = PhoneNo|| user.PhoneNo;
     user.firstName = firstName || user.firstName;
     user.role = role;
