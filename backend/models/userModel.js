@@ -10,11 +10,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    ProfileImage: {
+    profilePic: {
       type: String,
       default: "",
     },
-    ProfilePicId: {
+    profilePicId: {
       type: String,
       default: "",
     },

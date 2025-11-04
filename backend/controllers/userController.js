@@ -423,14 +423,13 @@ export const getUserById = async (req, res) =>{
 export const updateUser = async (req, res) => {
   try {
     const userIdToUpdate = req.params.id;
-    const loggedInUser = req.user; // from authenticated middleware
+    const loggedInUser = req.user;
     const { firstName, lastName, address, city, zipCode, phoneNo, role } = req.body;
 
-    // Authorization check
     if (loggedInUser._id.toString() !== userIdToUpdate && loggedInUser.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "You are not allowed to update this profile",
+        message: "You are not allowed to update this profile"
       });
     }
 
@@ -438,18 +437,16 @@ export const updateUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User not found"
       });
     }
 
-    // Keep existing images
     let profilePicUrl = user.profilePic;
-    let profilePicPublicId = user.profilePicPublicId;
+    let profilePicId = user.profilePicId;
 
-    // If new file uploaded
     if (req.file) {
-      if (profilePicPublicId) {
-        await cloudinary.uploader.destroy(profilePicPublicId);
+      if (profilePicId) {
+        await cloudinary.uploader.destroy(profilePicId);
       }
 
       const uploadRes = await new Promise((resolve, reject) => {
@@ -464,7 +461,7 @@ export const updateUser = async (req, res) => {
       });
 
       profilePicUrl = uploadRes.secure_url;
-      profilePicPublicId = uploadRes.public_id;
+      profilePicId = uploadRes.public_id;
     }
 
     // Update fields
@@ -473,24 +470,23 @@ export const updateUser = async (req, res) => {
     user.address = address || user.address;
     user.city = city || user.city;
     user.zipCode = zipCode || user.zipCode;
-    user.phoneNo = phoneNo || user.phoneNo; // ✅ fixed name
+    user.phoneNo = phoneNo || user.phoneNo;
     user.role = role || user.role;
     user.profilePic = profilePicUrl;
-    user.profilePicPublicId = profilePicPublicId;
+    user.profilePicId = profilePicId;
 
     const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      user: updatedUser,
+      user: updatedUser
     });
 
   } catch (error) {
-    console.error("Error in updateUser:", error.message);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message
     });
   }
 };
