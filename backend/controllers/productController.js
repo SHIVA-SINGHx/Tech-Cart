@@ -3,7 +3,7 @@ import getDataUri from "../utils/dataUri";
 import cloudniary from "cloudinary"
 import { Product } from "../models/productModel";
 
-export const getProduct = async (req, res) => {
+export const addProduct = async (req, res) => {
   try {
     const { productName, productDescription, price, category, brand } =
       req.body;
@@ -56,3 +56,28 @@ export const getProduct = async (req, res) => {
     });
   }
 };
+
+export const getAllProducts = async (req, res) =>{
+    try {
+        const products = await Product.find();
+        if (!products){
+            return res.status(404).json({
+                success: false,
+                message: "Product not found",
+                products:[]
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Product fetch successfully",
+            products: products
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
