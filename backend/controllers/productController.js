@@ -13,6 +13,10 @@ export const getProduct = async (req, res) =>{
         }
 
         // handle multiple images
+        let productImg = [];
+        if(req.files && req.files.length > 0){
+
+        }
 
 
     } catch (error) {
