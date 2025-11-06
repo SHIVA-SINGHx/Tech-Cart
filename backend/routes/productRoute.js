@@ -7,7 +7,8 @@ const router = express.Router()
 
 router.post("/add", isAuthenticated, isAdmin, multipleUpload ,addProduct);
 router.get("/getallproducts", getAllProducts)
-router.delete("/deleteproducts", isAuthenticated, isAdmin, multipleUpload, deleteProducts);
+router.delete("/delete/:productId", isAuthenticated, isAdmin, deleteProducts);
+router.put("/update/:productId", isAuthenticated, isAdmin, multipleUpload, deleteProducts);
 
 
 export default router
