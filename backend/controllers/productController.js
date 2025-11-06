@@ -1,7 +1,7 @@
 import express from "express";
 import getDataUri from "../utils/dataUri";
-import cloudniary from "cloudinary"
 import { Product } from "../models/productModel";
+import cloudinary from "../utils/cloudinary";
 
 export const addProduct = async (req, res) => {
   try {
@@ -17,38 +17,36 @@ export const addProduct = async (req, res) => {
     }
 
     // handle multiple images
-    let productImg = []; 
+    let productImg = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-          const fileUri = getDataUri(file)
-          const result = await cloudniary.upload(fileUri,{
-            folder: "mern_products" // folder name of cloudinary
-          })
+        const fileUri = getDataUri(file);
+        const result = await cloudniary.upload(fileUri, {
+          folder: "mern_products", // folder name of cloudinary
+        });
 
-          productImg.push({
-            url: result.secure_url,
-            public_id: result.public_id
-          })
+        productImg.push({
+          url: result.secure_url,
+          public_id: result.public_id,
+        });
       }
     }
 
     const newProduct = await Product.create({
-        userId,
-        productName,
-        productDescription,
-        price,
-        brand,
-        category,
-        productImg  // array of objects 
-    })
+      userId,
+      productName,
+      productDescription,
+      price,
+      brand,
+      category,
+      productImg, // array of objects
+    });
 
     return res.status(200).json({
-        success: true,
-        message: "Product created successfully",
-        product: newProduct
-    })
-
-
+      success: true,
+      message: "Product created successfully",
+      product: newProduct,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -57,27 +55,58 @@ export const addProduct = async (req, res) => {
   }
 };
 
-export const getAllProducts = async (req, res) =>{
-    try {
-        const products = await Product.find();
-        if (!products){
-            return res.status(404).json({
-                success: false,
-                message: "Product not found",
-                products:[]
-            })
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Product fetch successfully",
-            products: products
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        })
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    if (!products) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+        products: [],
+      });
     }
-}
+
+    return res.status(200).json({
+      success: true,
+      message: "Product fetch successfully",
+      products: products,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteProducts = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // delete images from cloudninary
+    //   if(product.productImg && product.productImg.length > 0){
+    //   for (let img of product.productImg) {
+    //     const result = await cloudinary.uploader.destroy(img.public_Id)
+    //   }
+    // }
+    // delete img frm mongodb to
+    await Product.findByIdAndDelete(productId);
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
