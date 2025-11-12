@@ -11,6 +11,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import Footer from './components/Footer'
 import AuthPersist from './components/AuthPersisit'
 import Profile from './pages/Profile'
+import Product from './pages/Product'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/profile/:userId',
     element: <> <Navbar/><Profile/>,</>
+  },
+  {
+    path: '/products',
+    element: <> <Navbar/><Product/>,</>
   },
 ])
 

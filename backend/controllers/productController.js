@@ -1,7 +1,7 @@
 import express, { json } from "express";
-import getDataUri from "../utils/dataUri";
-import { Product } from "../models/productModel";
-import cloudinary from "../utils/cloudinary";
+import getDataUri from "../utils/dataUri.js";
+import { Product } from "../models/productModel.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const addProduct = async (req, res) => {
   try {

@@ -75,7 +75,7 @@ const Footer = () => {
 
       {/* 🔻 Bottom Section */}
       <div className="mt-10 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
-        © 2025 <span className="text-pink-500 font-semibold">Tech-Cart</span>. All rights reserved.
+        © 2025 <span className="text-pink-500 font-semibold">Shiva</span>. All rights reserved.
       </div>
     </footer>
   );
