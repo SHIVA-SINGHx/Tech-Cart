@@ -16,9 +16,11 @@ import ProductCard from "@/components/ProductCard";
 
 const Product = () => {
   const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(false)
 
   const getAllProducts = async ()=>{
     try {
+      setLoading(true)
       const res = await axios.get('http://localhost:8082/api/v1/product/getallproducts')
       if(res.data.success){
         setAllProducts(res.data.products)
@@ -26,6 +28,8 @@ const Product = () => {
     } catch (error) {
       console.log(error);
       
+    } finally{
+      setLoading(false)
     }
   }
 
@@ -62,7 +66,7 @@ const Product = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-7">
             {
               allProducts.map((product)=>{
-                return <ProductCard key={product._id} product={product}/>
+                return <ProductCard key={product._id} product={product} loading={loading}/>
               })
             }
           </div>
