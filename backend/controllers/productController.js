@@ -95,7 +95,7 @@ export const deleteProducts = async (req, res) => {
 
     if (product.productImg && product.productImg.length > 0) {
       for (let img of product.productImg) {
-        const result = await cloudinary.uploader.destroy(img.public_Id);
+        const result = await cloudinary.uploader.destroy(img.public_id);
       }
     }
     // delete img frm mongodb to
@@ -114,7 +114,7 @@ export const deleteProducts = async (req, res) => {
 
 export const updateProducts = async (req, res) => {
   try {
-    const productId = req.params;
+    const { id } = req.params; 
     const {
       productName,
       productDescription,
@@ -124,7 +124,7 @@ export const updateProducts = async (req, res) => {
       existingImages,
     } = req.body;
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -134,26 +134,26 @@ export const updateProducts = async (req, res) => {
 
     let updatedImg = [];
 
-    // selected old img
+    // Keep selected old images
     if (existingImages) {
       const keepIds = JSON.parse(existingImages);
       updatedImg = product.productImg.filter((img) =>
-        keepIds.includes(img.public_Id)
+        keepIds.includes(img.public_id)
       );
 
-      // only revomed image
-      const removedImage = product.productImg.filter((img) =>
-        keepIds.includes(img.public_Id)
+      // Remove unselected images from Cloudinary
+      const removedImage = product.productImg.filter(
+        (img) => !keepIds.includes(img.public_id)
       );
 
       for (let img of removedImage) {
-        await cloudinary.uploader.destroy(img.public_Id);
+        await cloudinary.uploader.destroy(img.public_id);
       }
     } else {
       updatedImg = product.productImg;
     }
 
-    // upload new image
+    // Upload new images if any
     if (req.files && req.files.length > 0) {
       for (let file of req.files) {
         const fileUrl = getDataUri(file);
@@ -162,25 +162,25 @@ export const updateProducts = async (req, res) => {
         });
         updatedImg.push({
           url: result.secure_url,
-          public_id: result.public_Id,
+          public_id: result.public_id,
         });
       }
     }
 
-    // update product
+    // Update fields
     product.productName = productName || product.productName;
-    product.productDescription =
-    productDescription || product.productDescription;
+    product.productDescription = productDescription || product.productDescription;
     product.price = price || product.price;
     product.brand = brand || product.brand;
     product.category = category || product.category;
-    product.productImg = productImg || product.productImg;
+    product.productImg = updatedImg;
 
     await product.save();
 
     return res.status(200).json({
       success: true,
       message: "Product updated successfully",
+      product,
     });
   } catch (error) {
     return res.status(500).json({
