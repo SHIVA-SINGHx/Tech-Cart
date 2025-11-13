@@ -1,4 +1,4 @@
-import React, {} from "react";
+import React, { useEffect, useState } from "react";
 
 import FilterSideBar from "@/components/FilterSideBar";
 import {
@@ -10,14 +10,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import axios from "axios";
+import axios from "axios";
+import ProductCard from "@/components/ProductCard";
+
 
 const Product = () => {
-  // const [allProducts, setAllProdcuts] = useState()
+  const [allProducts, setAllProducts] = useState([]);
 
-  // const getAllProducts = async ()=>{
-  //   const res = await axios.get(``)
-  // }
+  const getAllProducts = async ()=>{
+    try {
+      const res = await axios.get('http://localhost:8082/api/v1/product/getallproducts')
+      if(res.data.success){
+        setAllProducts(res.data.products)
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  useEffect(()=>{
+    getAllProducts()
+  },[])
+
+  console.log(allProducts);
+  
 
 
   return (
@@ -44,8 +61,8 @@ const Product = () => {
           {/* product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-7">
             {
-              [1,2,3,4].map((product)=>{
-                return product
+              allProducts.map((product)=>{
+                return <ProductCard key={product._id} product={product}/>
               })
             }
           </div>
