@@ -45,7 +45,7 @@ const Product = () => {
     <div className="pt-20 pb-20">
       <div className="max-w-7xl mx-auto flex gap-7">
         {/* Sidebar */}
-        <FilterSideBar />
+        <FilterSideBar allProducts={allProducts} />
 
         {/* Main product seciton */}
         <div className="flex flex-col flex-1">
