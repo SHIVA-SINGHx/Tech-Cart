@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios from "axios";
+import axios, { all } from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "@/redux/productSlice";
@@ -67,14 +67,14 @@ const Product = () => {
 
     filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1])
 
-    if(sortOrder === 'lowerToHigh'){
+    if(sortOrder === 'lowToHigh'){
       filtered.sort((a, b)=> a.price - b.price)
-    } else if(sortOrder === 'highToLower'){
+    } else if(sortOrder === 'highToLow'){
       filtered.sort((a, b) => b.price - a.price)
     }
 
-
-  }, [])
+    dispatch(setProducts(filtered))
+  }, [search, category, brand, allProducts, priceRange, sortOrder, dispatch])
 
   useEffect(() => {
     getAllProducts();
@@ -98,36 +98,39 @@ const Product = () => {
         setCategory={setCategory}
         />
 
-        {/* Main product seciton */}
+        {/* Main product section */}
         <div className="flex flex-col flex-1">
           <div className="flex justify-end mb-4">
-            <Select>
+            <Select onValueChange={(value)=> setSortOrder(value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by Price" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="lowtohigh">Price: Low to High</SelectItem>
-                  <SelectItem value="hightolow">Price: High to Low</SelectItem>
+                  <SelectItem value="lowToHigh">Price: Low to High</SelectItem>
+                  <SelectItem value="highToLow">Price: High to Low</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
           {/* product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-7">
-            {allProducts.map((product) => {
-              return (
-                <ProductCard
+            {
+              products.map((product)=>{
+                return (
+                  <ProductCard
                   key={product._id}
                   product={product}
                   loading={loading}
-                />
-              );
-            })}
+                  
+                  />
+                )
+              })
+            }
           </div>
         </div>
       </div>
-      {/* <ToastBar /> */}
+     
     </div>
   );
 };

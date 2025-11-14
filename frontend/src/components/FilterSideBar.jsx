@@ -41,7 +41,7 @@ const FilterSideBar = ({allProducts, priceRange, search, setSearch, brand, setBr
   }
 
   return (
-    <div className='bg-gray-100 mt-10 p-4 rounded-md h-max hidden md:block w-64'>
+    <div className='bg-gray-100 mt-10 p-1 rounded-md h-max hidden md:block w-64'>
       {/* Search */}
       <Input 
       type='text' 
