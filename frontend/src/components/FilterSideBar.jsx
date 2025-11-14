@@ -1,7 +1,8 @@
 import React from 'react'
 import { Input } from './ui/input';
+import { Button } from './ui/button';
 
-const FilterSideBar = ({allProducts}) => {
+const FilterSideBar = ({allProducts, priceRange}) => {
 
   const Categories = allProducts.map(c=> c.category);
   const uniqueCategory = ["All", ...new Set(Categories)]
@@ -38,6 +39,25 @@ const FilterSideBar = ({allProducts}) => {
           })
         }
       </select>
+
+      {/* Price Range */}
+      <h1 className='mt-5 font-semibold text-xl mb-3'>Price Range</h1>
+      <div className='flex flex-col gap-2'>
+        <label>
+          Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}
+        </label>
+
+        <div className='flex gap-2 items-center'>
+          <input type="number" min="0" max="5000" className='w-20 p-1 border border-gray-300 rounded' />
+          <span> - </span>
+          <input type="number" min="0" max="999999" className='w-20 p-1 border border-gray-300 rounded' />
+      </div>
+        <input type="range" min="0" max="5000" step="100" />
+        <input type="range" min="0" max="5000"  />
+      </div>
+
+      {/* Reset button */}
+      <Button className='bg-pink-600 text-white mt-5 cursor-pointer w-full'>Reset Filters</Button>
 
     </div>
   )

@@ -12,11 +12,20 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import ProductCard from "@/components/ProductCard";
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "@/redux/productSlice";
+import toast, { ToastBar, Toaster } from 'react-hot-toast';
+
 
 
 const Product = () => {
+  const {products} = useSelector(store=> store.product)
+  const dispatch = useDispatch()
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(false)
+  const [priceRange, setPriceRange] = useState([0, 999999])
+  
+  
 
   const getAllProducts = async ()=>{
     try {
@@ -24,9 +33,11 @@ const Product = () => {
       const res = await axios.get('http://localhost:8082/api/v1/product/getallproducts')
       if(res.data.success){
         setAllProducts(res.data.products)
+        dispatch(setProducts(res.data.products))
       }
     } catch (error) {
       console.log(error);
+      toast.error("Error hai")
       
     } finally{
       setLoading(false)
@@ -45,7 +56,7 @@ const Product = () => {
     <div className="pt-20 pb-20">
       <div className="max-w-7xl mx-auto flex gap-7">
         {/* Sidebar */}
-        <FilterSideBar allProducts={allProducts} />
+        <FilterSideBar allProducts={allProducts} priceRange={priceRange} />
 
         {/* Main product seciton */}
         <div className="flex flex-col flex-1">
@@ -73,6 +84,7 @@ const Product = () => {
 
         </div>
       </div>
+      <ToastBar/>
     </div>
   );
 };
