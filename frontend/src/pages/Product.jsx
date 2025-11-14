@@ -27,6 +27,7 @@ const Product = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All")
   const [brand, setBrand] = useState("All")
+  const [sortOrder, setSortOrder] =useState("")
 
   const getAllProducts = async () => {
     try {
@@ -45,6 +46,35 @@ const Product = () => {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    if(allProducts.length === 0) return;
+
+    let filtered = [...allProducts]
+    
+    if(search.trim() !== ""){
+      filtered = filtered.filter(p=> p.productName?.toLowerCase().includes(search.toLowerCase()))
+    }
+
+    if(category !== "All"){
+      filtered = filtered.filter(p=> p.category === category)
+    }
+
+    if(brand !== 'All'){
+      filtered = filtered.filter(p=> p.brand === brand)
+
+    }
+
+    filtered = filtered.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1])
+
+    if(sortOrder === 'lowerToHigh'){
+      filtered.sort((a, b)=> a.price - b.price)
+    } else if(sortOrder === 'highToLower'){
+      filtered.sort((a, b) => b.price - a.price)
+    }
+
+
+  }, [])
 
   useEffect(() => {
     getAllProducts();

@@ -6,11 +6,9 @@ const FilterSideBar = ({allProducts, priceRange, search, setSearch, brand, setBr
 
   const Categories = allProducts.map(c=> c.category);
   const uniqueCategory = ["All", ...new Set(Categories)]
-  console.log(uniqueCategory);
 
   const Brands = allProducts.map(b=> b.brand);
   const uniqueBrand = ["All", ...new Set(Brands)]
-  console.log(uniqueBrand);
 
   const handleCategoryClick = (val)=>{
     setCategory(val)
@@ -20,14 +18,26 @@ const FilterSideBar = ({allProducts, priceRange, search, setSearch, brand, setBr
     setBrand(e.target.value)
   }
 
-  const handleMaxChange = (e)=>{
-    const value = Number(e.target.value)
-    if(value <= priceRange[1]) setPriceRange([value, priceRange[1]])
-  }
-
   const handleMinChange = (e)=>{
     const value = Number(e.target.value)
-    if(value >= priceRange[0]) setPriceRange([value, priceRange[0]])
+    if(value <= priceRange[1]) {
+      setPriceRange([value, priceRange[1]])
+    }
+  }
+
+
+  const handleMaxChange = (e)=>{
+    const value = Number(e.target.value)
+    if(value >= priceRange[0]) {
+      setPriceRange([priceRange[0], value])
+    }
+  }
+
+  const handleResetFilters = () => {
+    setSearch('')
+    setCategory('All')
+    setBrand('All')
+    setPriceRange([0, 5000])
   }
 
   return (
@@ -46,9 +56,13 @@ const FilterSideBar = ({allProducts, priceRange, search, setSearch, brand, setBr
         {
           uniqueCategory.map((item, index)=>(
             <div key={index} className='flex items-center gap-2'>
-              <input type="radio" checked={category === item} 
-              onChange={()=> handleCategoryClick(item)}/>
-              <label htmlFor="">{item}</label>
+              <input 
+                type="radio" 
+                name="category"
+                checked={category === item} 
+                onChange={()=> handleCategoryClick(item)}
+              />
+              <label>{item}</label>
             </div>
           ))
         }
@@ -56,7 +70,11 @@ const FilterSideBar = ({allProducts, priceRange, search, setSearch, brand, setBr
 
       {/* Brands */}
       <h1 className='mt-5 font-semibold text-xl'>Brand</h1>
-      <select className='bg-white w-full p-2 border-gray-200 border-2 rounded-md' value={brand} onChange={handleBrandChange}>
+      <select 
+        className='bg-white w-full p-2 border-gray-200 border-2 rounded-md' 
+        value={brand} 
+        onChange={handleBrandChange}
+      >
         {
           uniqueBrand.map((item, index)=>{
             return <option key={index} value={item}>{item.toUpperCase()}</option>
@@ -66,51 +84,75 @@ const FilterSideBar = ({allProducts, priceRange, search, setSearch, brand, setBr
 
       {/* Price Range */}
       <h1 className='mt-5 font-semibold text-xl mb-3'>Price Range</h1>
-      <div className='flex flex-col gap-2'>
-        <label>
-          Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}
+      <div className='flex flex-col gap-4'>
+        <label className='font-medium'>
+          ₹{priceRange[0]} - ₹{priceRange[1]}
         </label>
 
-        <div className='flex gap-2 items-center'>
-          <input 
-          type="number" 
-          min="0" 
-          max="5000" 
-          value={priceRange[0]}
-          onChange={handleMinChange}
-          className='w-20 p-1 border border-gray-300 rounded' />
-          <span> - </span>
-          <input 
-          type="number"
-           min="0" 
-           max="999999"
-           value={priceRange[1]}
-           onChange={handleMaxChange}
-           className='w-20 p-1 border border-gray-300 rounded' />
-      </div>
-        <input 
-        type="range" 
-        min="0" 
-        max="5000"
-        step="100" 
-        value={priceRange[0]}
-        onChange={handleMinChange}
-        className='w-full'
-        
-        />
+        {/* Number inputs */}
+        <div className='flex gap-2 items-center justify-between'>
+          <div className='flex items-center gap-1'>
+            <label className='text-sm'>Min:</label>
+            <input 
+              type="number" 
+              min="0" 
+              max="5000" 
+              value={priceRange[0]}
+              onChange={handleMinChange}
+              className='w-20 p-1 border border-gray-300 rounded' 
+            />
+          </div>
+          <span className='text-gray-400'>-</span>
+          <div className='flex items-center gap-1'>
+            <label className='text-sm'>Max:</label>
+            <input 
+              type="number"
+              min="0" 
+              max="5000"
+              value={priceRange[1]}
+              onChange={handleMaxChange}
+              className='w-20 p-1 border border-gray-300 rounded' 
+            />
+          </div>
+        </div>
 
-        <input 
-        type="range" 
-        min="0"
-        max="5000"
-        value={priceRange[1]}
-        onChange={handleMaxChange}
-        className='w-full'
-        />
+        {/* Range sliders */}
+        <div className='flex flex-col gap-3'>
+          <div>
+            <label className='text-sm font-medium block mb-2'>Minimum Price</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="5000"
+              step="100" 
+              value={priceRange[0]}
+              onChange={handleMinChange}
+              className='w-full cursor-pointer'
+            />
+          </div>
+
+          <div>
+            <label className='text-sm font-medium block mb-2'>Maximum Price</label>
+            <input 
+              type="range" 
+              min="0"
+              max="5000"
+              step="100"
+              value={priceRange[1]}
+              onChange={handleMaxChange}
+              className='w-full cursor-pointer'
+            />
+          </div>
+        </div>
       </div>
 
       {/* Reset button */}
-      <Button className='bg-pink-600 text-white mt-5 cursor-pointer w-full'>Reset Filters</Button>
+      <Button 
+        onClick={handleResetFilters}
+        className='bg-pink-600 text-white mt-5 cursor-pointer w-full hover:bg-pink-700'
+      >
+        Reset Filters
+      </Button>
 
     </div>
   )
