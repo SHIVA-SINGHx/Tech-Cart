@@ -12,6 +12,7 @@ import Footer from './components/Footer'
 import AuthPersist from './components/AuthPersisit'
 import Profile from './pages/Profile'
 import Product from './pages/Product'
+import Cart from './pages/Cart'
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: '/products',
     element: <> <Navbar/><Product/>,</>
+  },
+  {
+    path: '/cart',
+    element: <> <Navbar/><Cart/>,</>
   },
 ])
 

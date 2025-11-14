@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axios, { all } from "axios";
+import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "@/redux/productSlice";
