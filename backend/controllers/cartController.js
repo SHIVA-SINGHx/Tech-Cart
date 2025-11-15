@@ -120,3 +120,31 @@ export const updateQuantity = async (req, res) =>{
         })
     }
 }
+
+export const removeCart = async (req, res)=>{
+    try {
+
+        const {userId} = req.id;
+        const{productId} = req.body
+
+        let cart = await Cart.findOne({userId})
+        if(!cart) return res.json({success: false, message: "Cart not find"})
+
+        cart.items = cart.items.filter(item=> item.productId.toString() === productId)
+
+        cart.totalPrice = cart.items.reduce((acc, item)=> acc + item.price * item.quantity, 0)
+
+        await cart.save()
+        res.status(200).json({
+            success: true,
+            cart
+        })
+
+        
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
