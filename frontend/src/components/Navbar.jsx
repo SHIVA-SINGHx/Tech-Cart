@@ -19,19 +19,45 @@ const Navbar = () => {
 
     const logoutHandler = async () => {
         try {
-            const res = await axios.post(`http://localhost:8082/api/v1/user/logout`, {}, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
+            const token = localStorage.getItem('accessToken')
+            
+            // Validate token exists
+            if (!token) {
+                toast.error('No authentication token found')
+                dispatch(logout())
+                navigate('/login')
+                return
+            }
+
+            const res = await axios.post(
+                `http://localhost:8082/api/v1/user/logout`,
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
                 }
-            })
+            )
+            
             if (res.data.success) {
-                dispatch(logout()) // This will clear both localStorage and Redux state
+                dispatch(logout())
                 toast.success(res.data.message)
+                setIsOpen(false)
                 navigate('/login')
             }
         } catch (error) {
-            console.log(error);
-            toast.error('Logout failed')
+            console.log('Logout error:', error)
+            
+            // Even if logout fails on backend, clear frontend state
+            if (error.response?.status === 400 || error.response?.status === 401) {
+                dispatch(logout())
+                toast.success('Logged out')
+                navigate('/login')
+            } else {
+                toast.error(error.response?.data?.message || 'Logout failed')
+            }
+            setIsOpen(false)
         }
     }
 
@@ -190,12 +216,12 @@ const Navbar = () => {
                                     whileTap={{ scale: 0.95 }}
                                 >
                                     {user ? (
-                                        <Link to={'/login'}>
-                                        <Button onClick={logoutHandler} className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'>
+                                        <Button 
+                                            onClick={logoutHandler} 
+                                            className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'
+                                        >
                                             Logout
                                         </Button>
-                                        
-                                        </Link>
                                     ) : (
                                         <Link to='/login'>
                                             <Button className='w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white'>

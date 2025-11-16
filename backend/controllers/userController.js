@@ -235,17 +235,41 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const userId = req.id;
-    await Session.deleteMany({ userId: userId });
-    await User.findByIdAndUpdate(userId, { isLoggedIn: false });
+    const userId = req.id; // Get from isAuthenticated middleware
+    
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated"
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Clear user session if you have sessions
+    const existingSession = await Session.findOne({ userId });
+    if (existingSession) {
+      await Session.deleteOne({ userId });
+    }
+
+    // Optional: clear login status
+    user.isLoggedIn = false;
+    await user.save();
+
     return res.status(200).json({
       success: true,
-      message: "User logged out successfully",
+      message: "Logged out successfully"
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message
     });
   }
 };
@@ -300,29 +324,29 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
-    if (!user.otp || !user.otpExpiry) {
+    if (!user.Otp || !user.OtpExpiry) {
       return res.status(400).json({
         success: false,
         message: "Otp is not generated or already verified",
       });
     }
 
-    if (!user.otp < new Date()) {
+    if (!user.Otp < new Date()) {
       return res.status(400).json({
         success: false,
         message: "Otp has epxired please generate new one",
       });
     }
 
-    if (otp !== user.otp) {
+    if (otp !== user.Otp) {
       return res.status(400).json({
         success: false,
         message: "Otp is invalid",
       });
     }
 
-    user.otp = null;
-    user.otpExpiry = null;
+    user.Otp = null;
+    user.OtpExpiry = null;
     await user.save();
 
     return res.status(200).json({
