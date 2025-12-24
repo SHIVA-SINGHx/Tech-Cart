@@ -12,3 +12,5 @@ router.put("/update/:id", isAuthenticated, isAdmin, multipleUpload, updateProduc
 
 
 export default router
+
+

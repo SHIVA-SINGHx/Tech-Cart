@@ -49,7 +49,6 @@ const Navbar = () => {
         } catch (error) {
             console.log('Logout error:', error)
             
-            // Even if logout fails on backend, clear frontend state
             if (error.response?.status === 400 || error.response?.status === 401) {
                 dispatch(logout())
                 toast.success('Logged out')
