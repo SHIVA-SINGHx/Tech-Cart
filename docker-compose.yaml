@@ -1,0 +1,36 @@
+services:
+  frontend:
+    image: tech-cart-frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - techc-network
+
+  backend:
+    image: tech-cart-backend
+    ports:
+      - "8082:8082"
+    env_file:
+      - backend/.env
+    networks:
+      - techc-network
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - techc-network
+
+networks:
+  techc-network:
+      driver: bridge
+
+
+volumes:
+  mongo_data:
+    driver: local
