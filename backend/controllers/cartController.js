@@ -3,7 +3,7 @@ import { Product } from "../models/productModel.js";
 
 export const getCart = async (req, res) => {
   try {
-    const { userId } = req.id;
+    const userId = req.id;
 
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     if (!cart) {
@@ -20,7 +20,7 @@ export const getCart = async (req, res) => {
 
 export const addCart = async (req, res) => {
   try {
-    const { userId } = req.id;
+    const userId = req.id;
     const { productId } = req.body;
 
     // check if product exists?
@@ -64,7 +64,8 @@ export const addCart = async (req, res) => {
       // Recalculate total price
 
       cart.totalPrice = cart.items.reduce(
-        (acc, item) => acc + item.price * item.quantity
+        (acc, item) => acc + item.price * item.quantity,
+        0
       );
     }
 
@@ -72,7 +73,6 @@ export const addCart = async (req, res) => {
     await cart.save();
 
     // populate product details before sending response
-
     const populateCart = await Cart.findById(cart._id).populate(
       "items.productId"
     );
@@ -92,7 +92,7 @@ export const addCart = async (req, res) => {
 
 export const updateQuantity = async (req, res) =>{
     try {
-        const {userId} = req.id;
+        const userId = req.id;
         const {productId, type} = req.body;
 
         let cart = await Cart.findOne({userId})
@@ -124,13 +124,14 @@ export const updateQuantity = async (req, res) =>{
 export const removeCart = async (req, res)=>{
     try {
 
-        const {userId} = req.id;
+        const userId = req.id;
         const{productId} = req.body
 
         let cart = await Cart.findOne({userId})
         if(!cart) return res.json({success: false, message: "Cart not find"})
 
-        cart.items = cart.items.filter(item=> item.productId.toString() === productId)
+        // Keep items that are NOT the removed product
+        cart.items = cart.items.filter(item=> item.productId.toString() !== productId)
 
         cart.totalPrice = cart.items.reduce((acc, item)=> acc + item.price * item.quantity, 0)
 
