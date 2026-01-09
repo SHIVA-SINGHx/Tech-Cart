@@ -15,7 +15,7 @@ const ProductCard = ({ product, loading }) => {
 
   const addToCart = async(productId)=>{
     try {
-      const res = axios.post(`https://localhost8082/api/v1/cart/add`, {productId}, {
+      const res = axios.post(`http://localhost:8082/api/v1/cart/add`, {productId}, {
         headers:{
           Authorization: `Bearer ${accessToken} `
         }
@@ -26,7 +26,7 @@ const ProductCard = ({ product, loading }) => {
       }
       
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
     }
   }
 
