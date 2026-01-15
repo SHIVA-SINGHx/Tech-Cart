@@ -30,7 +30,8 @@ const Cart = () => {
 
   const subtotal = calculateSubtotal();
   const tax = Math.round(subtotal * 0.18);
-  const total = subtotal + tax;
+  const platfromFee = 50;
+  const total = subtotal + tax + platfromFee;
 
   return (
     <div className="pt-20 pb-20 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
@@ -156,6 +157,12 @@ const Cart = () => {
                         <span className="text-gray-600">Tax (18% GST)</span>
                         <span className="text-gray-900 font-semibold">
                           ₹{tax.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Platform fee (50.0)</span>
+                        <span className="text-gray-900 font-semibold">
+                          ₹{platfromFee.toLocaleString()}
                         </span>
                       </div>
 
