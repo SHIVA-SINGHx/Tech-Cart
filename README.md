@@ -4,6 +4,11 @@ Tech-Cart is a **full‑stack e‑commerce application** built to demonstrate a 
 
 The goal of this project is to show how a modern e‑commerce platform can be developed, containerized, and run locally with a **single command**.
 
+<img width="1920" height="911" alt="Tech-Cart-01-15-2026_11_51_AM" src="https://github.com/user-attachments/assets/c6e5b952-ca3e-480d-8813-4793fcccd771" />
+<img width="1920" height="911" alt="Tech-Cart-01-15-2026_11_51_AM (1)" src="https://github.com/user-attachments/assets/00d6b971-deaf-4039-932e-a94b5847fdc1" />
+
+
+
 ---
 
 ## 📂 Project Structure
