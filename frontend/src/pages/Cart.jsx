@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector} from "react-redux";
 import userlogo from "@/assets/user.avif";
 import { Button } from "@/components/ui/button";
 import { Trash2, ShoppingCart } from "lucide-react";

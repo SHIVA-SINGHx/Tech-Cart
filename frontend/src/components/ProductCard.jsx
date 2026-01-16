@@ -4,14 +4,13 @@ import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import axios from "axios";
 import { toast } from "sonner";
-// import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart as addToCartAction } from "@/redux/cartSlice";
 
 const ProductCard = ({ product, loading }) => {
   const { productName, price, productImg } = product;
-  const accessToken = localStorage.getItem("accessToken")
-  // const dispatch = useDispatch()
-  // const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const accessToken = useSelector((store) => store.user.accessToken);
 
 
   const addToCart = async(productId)=>{
@@ -23,11 +22,12 @@ const ProductCard = ({ product, loading }) => {
       })
       if(res.data.success){
         toast.success("Product added successfully")
-        // dispatch(setCart(res.data.cart))
+        dispatch(addToCartAction(res.data.cart))
       }
       
     } catch (error) {
       console.log(error.response?.data || error.message)
+      toast.error("Failed to add product to cart")
     }
   }
 
