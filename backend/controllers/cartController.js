@@ -7,7 +7,7 @@ export const getCart = async (req, res) => {
 
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     if (!cart) {
-      return res.json({ success: true, cart: [] });
+      return res.json({ success: true, cart: { items: [], totalPrice: 0 } });
     }
     return res.status(200).json({ success: true, cart });
   } catch (error) {

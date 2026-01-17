@@ -31,10 +31,11 @@ const Cart = () => {
         console.log(error)
       }
     }
-    if(accessToken) {
+    // Only fetch once when component mounts
+    if(accessToken && !cart) {
       fetchCart()
     }
-  }, [accessToken, dispatch])
+  }, [accessToken])
 
 const handleQuantityUpdate = async (productId, type)=>{
   try {
