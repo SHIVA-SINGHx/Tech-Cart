@@ -89,7 +89,6 @@ export const addCart = async (req, res) => {
 };
 
 
-
 export const updateQuantity = async (req, res) =>{
     try {
         const userId = req.id;
