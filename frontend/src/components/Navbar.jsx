@@ -12,6 +12,8 @@ import { logout, setUser } from '@/redux/userSlice'
 const Navbar = () => {
     const dispatch = useDispatch()
     const { user } = useSelector((state) => state.user)
+    const cart = useSelector((state) => state.cart.cartItems)
+    const cartCount = cart?.items?.length || 0
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen(!isOpen);
     const accessToken = localStorage.getItem('accessToken')
@@ -133,14 +135,16 @@ const Navbar = () => {
                     >
                         <Link to='/cart'>
                             <ShoppingCart className='w-6 h-6 text-gray-700 hover:text-pink-600 transition-colors' />
-                            <motion.span 
-                                className='bg-pink-600 rounded-full absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center text-white text-xs'
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                whileHover={{ scale: 1.2 }}
-                            >
-                                0
-                            </motion.span>
+                            {cartCount > 0 && (
+                                <motion.span 
+                                    className='bg-pink-600 rounded-full absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center text-white text-xs font-bold'
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    whileHover={{ scale: 1.2 }}
+                                >
+                                    {cartCount}
+                                </motion.span>
+                            )}
                         </Link>
                     </motion.div>
 
@@ -206,9 +210,11 @@ const Navbar = () => {
                                 >
                                     <Link to='/cart' className='text-gray-700 hover:text-pink-600 transition-colors flex items-center gap-2'>
                                         Cart
-                                        <span className='bg-pink-600 text-white px-2 py-0.5 rounded-full text-xs'>
-                                            0
-                                        </span>
+                                        {cartCount > 0 && (
+                                            <span className='bg-pink-600 text-white px-2 py-0.5 rounded-full text-xs font-bold'>
+                                                {cartCount}
+                                            </span>
+                                        )}
                                     </Link>
                                 </motion.li>
                                 <motion.li

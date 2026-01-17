@@ -22,6 +22,7 @@ const ProductCard = ({ product, loading }) => {
       })
       if(res.data.success){
         toast.success("Product added successfully")
+        // Dispatching the cart object which contains { items, totalPrice, etc }
         dispatch(addToCartAction(res.data.cart))
       }
       

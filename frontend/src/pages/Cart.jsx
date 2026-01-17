@@ -1,30 +1,94 @@
 import { Card } from "@/components/ui/card";
-import React, { useState } from "react";
-import { useSelector} from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector} from "react-redux";
 import userlogo from "@/assets/user.avif";
 import { Button } from "@/components/ui/button";
 import { Trash2, ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { setCart } from "@/redux/cartSlice";
 
 const Cart = () => {
-  const cart = useSelector((store) => store.product);
+  const cart = useSelector((store) => store.cart.cartItems);
   const [quantities, setQuantities] = useState({});
+  const dispatch = useDispatch()
 
-  const handleQuantityChange = (productId, change) => {
-    setQuantities((prev) => {
-      const current = prev[productId] || 1;
-      const newQuantity = current + change;
-      if (newQuantity > 0) {
-        return { ...prev, [productId]: newQuantity };
+  const API = "http://localhost:8082/api/v1/cart";
+  const accessToken = localStorage.getItem("accessToken")
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const res = await axios.get(`${API}/getallproducts`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
+        if(res.data.success) {
+          dispatch(setCart(res.data.cart))
+        }
+      } catch (error) {
+        console.log(error)
       }
-      return prev;
-    });
-  };
+    }
+    if(accessToken) {
+      fetchCart()
+    }
+  }, [accessToken, dispatch])
+
+const handleQuantityUpdate = async (productId, type)=>{
+  try {
+    const res = await axios.put(`${API}/update`,{productId, type}, {
+      headers:{
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+
+    if(res.data.success){
+      dispatch(setCart(res.data.cart))
+    }
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
+
+}
+
+const handleRemoveFromCart = async (productId) => {
+  try {
+    const res = await axios.delete(`${API}/remove`, {
+      data: { productId },
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    
+    if(res.data.success) {
+      dispatch(setCart(res.data.cart))
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+  // const handleQuantityChange = (productId, change) => {
+  //   setQuantities((prev) => {
+  //     const current = prev[productId] || 1;
+  //     const newQuantity = current + change;
+  //     if (newQuantity > 0) {
+  //       return { ...prev, [productId]: newQuantity };
+  //     }
+  //     return prev;
+  //   });
+  // };
 
   const getQuantity = (productId) => quantities[productId] || 1;
 
   const calculateSubtotal = () => {
-    return cart?.products?.reduce((total, product) => {
-      return total + product.price * getQuantity(product._id);
+    return cart?.items?.reduce((total, item) => {
+      return total + item.price * item.quantity;
     }, 0) || 0;
   };
 
@@ -36,22 +100,23 @@ const Cart = () => {
   return (
     <div className="pt-20 pb-20 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {cart?.products?.length > 0 ? (
+        {cart?.items?.length > 0 ? (
           <>
             <div className="flex items-center gap-3 mb-8">
               <ShoppingCart className="w-8 h-8 text-blue-600" />
               <h1 className="text-4xl font-bold text-gray-900">Shopping Cart</h1>
               <span className="ml-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
-                {cart.products.length} items
+                {cart.items.length} items
               </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-4">
-                {cart.products.map((product) => {
-                  const quantity = getQuantity(product._id);
-                  const itemTotal = product.price * quantity;
+                {cart.items.map((item) => {
+                  const product = item.productId;
+                  const quantity = item.quantity;
+                  const itemTotal = item.price * item.quantity;
 
                   return (
                     <Card
@@ -91,7 +156,7 @@ const Cart = () => {
                           <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-2 w-fit">
                             <Button
                               onClick={() =>
-                                handleQuantityChange(product._id, -1)
+                                handleQuantityUpdate(product._id, "decrease")
                               }
                               variant="ghost"
                               size="sm"
@@ -104,7 +169,7 @@ const Cart = () => {
                             </span>
                             <Button
                               onClick={() =>
-                                handleQuantityChange(product._id, 1)
+                               handleQuantityUpdate(product._id, "increase")
                               }
                               variant="ghost"
                               size="sm"
@@ -124,6 +189,7 @@ const Cart = () => {
 
                           {/* Delete Button */}
                           <Button
+                            onClick={() => handleRemoveFromCart(product._id)}
                             variant="ghost"
                             size="icon"
                             className="text-red-500 hover:bg-red-50 h-10 w-10"
@@ -199,9 +265,11 @@ const Cart = () => {
             <p className="text-gray-500 mb-8">
               Add some items to get started!
             </p>
+          <Link to= "/products">
             <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold">
               Start Shopping
             </Button>
+          </Link>
           </div>
         )}
       </div>

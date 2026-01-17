@@ -32,7 +32,7 @@ export const addCart = async (req, res) => {
       });
     }
 
-    // find the user's cart if it is exists?
+    // find the users cart if it is exists?
     let cart = await Cart.findOne({ userId });
 
     // if Cart does'nt exist?
@@ -52,8 +52,8 @@ export const addCart = async (req, res) => {
         // if product exists -> just increase quantity
         cart.items[itemIndex].quantity += 1;
       } else {
-        // if new product -> push to cart
 
+        // if new product -> push to cart
         cart.items.push({
           productId,
           quantity: 1,
@@ -62,14 +62,12 @@ export const addCart = async (req, res) => {
       }
 
       // Recalculate total price
-
       cart.totalPrice = cart.items.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0
       );
     }
 
-    // save cart
     await cart.save();
 
     // populate product details before sending response
@@ -89,6 +87,8 @@ export const addCart = async (req, res) => {
     });
   }
 };
+
+
 
 export const updateQuantity = async (req, res) =>{
     try {
@@ -110,7 +110,7 @@ export const updateQuantity = async (req, res) =>{
         cart.totalPrice = cart.items.reduce((acc, item)=> acc + item.price * item.quantity, 0)
 
         await cart.save()
-        cart = await cart.populate("items.productId")
+        cart = await Cart.findById(cart._id).populate("items.productId")
         res.status(200).json({success: true, cart})
         
     } catch (error) {
@@ -136,6 +136,7 @@ export const removeCart = async (req, res)=>{
         cart.totalPrice = cart.items.reduce((acc, item)=> acc + item.price * item.quantity, 0)
 
         await cart.save()
+        cart = await Cart.findById(cart._id).populate("items.productId")
         res.status(200).json({
             success: true,
             cart
