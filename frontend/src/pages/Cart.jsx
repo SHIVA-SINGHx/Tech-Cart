@@ -31,7 +31,6 @@ const Cart = () => {
         console.log(error)
       }
     }
-    // Only fetch once when component mounts
     if(accessToken && !cart) {
       fetchCart()
     }
