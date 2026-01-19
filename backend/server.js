@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://tech-cart-onc2.vercel.app/",
+    origin: "https://tech-cart-delta.vercel.app/",
     credentials: true,
   })
 );
