@@ -9,7 +9,8 @@ const VerifyEmail = () => {
 
     const verifyEmail = async ()=>{
         try {
-            const res = await axios.post(`https://tech-cart-onc2.vercel.app/api/v1/user/verify`, {}, {
+            const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
+            const res = await axios.post(`${apiUrl}/api/v1/user/verify`, {}, {
                 headers:{
                     Authorization: `Bearer ${token}`
                 }

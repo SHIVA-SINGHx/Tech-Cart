@@ -31,13 +31,16 @@ const Navbar = () => {
                 return
             }
 
+            const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
             const res = await axios.post(
-                `https://tech-cart-onc2.vercel.app/api/v1/user/logout`,
+                `${apiUrl}/api/v1/user/logout`,
                 {},
                 {
+                    withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`
+                        
                     }
                 }
             )

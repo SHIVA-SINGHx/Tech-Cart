@@ -15,7 +15,7 @@ export const verifyEmail = (token, email) => {
     to: "singhroyai847@gmail.com",
     subject: "Email Verification",
     text: `Hi! There You have recently visited our website and entered your email.
-    Please follow the given link to verify your email. http://localhost:5173/verify/${token}
+    Please follow the given link to verify your email. https://tech-cart-delta.vercel.app/verify/${token}
     Thanks
     `,
   };

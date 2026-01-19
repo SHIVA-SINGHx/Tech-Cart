@@ -32,8 +32,9 @@ const Product = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
       const res = await axios.get(
-        "https://tech-cart-onc2.vercel.app/api/v1/product/getallproducts"
+        `${apiUrl}/api/v1/product/getallproducts`
       );
       if (res.data.success) {
         setAllProducts(res.data.products);
