@@ -73,7 +73,7 @@ const Profile = () => {
         formData.append("file", file);
       }
       const res = await axios.put(
-        `https://tech-cart-xsfi.vercel.app/api/v1/user/update/${userId}`,
+        `https://tech-cart-onc2.vercel.app//api/v1/user/update/${userId}`,
         formData,
         {
           headers: {

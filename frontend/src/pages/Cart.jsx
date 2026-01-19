@@ -13,7 +13,7 @@ const Cart = () => {
   const [quantities, setQuantities] = useState({});
   const dispatch = useDispatch()
 
-  const API = "https://tech-cart-xsfi.vercel.app/api/v1/cart";
+  const API = "https://tech-cart-onc2.vercel.app/api/v1/cart";
   const accessToken = localStorage.getItem("accessToken")
 
   useEffect(() => {

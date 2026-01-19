@@ -33,7 +33,7 @@ const Product = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://tech-cart-xsfi.vercel.app/api/v1/product/getallproducts"
+        "https://tech-cart-onc2.vercel.app/api/v1/product/getallproducts"
       );
       if (res.data.success) {
         setAllProducts(res.data.products);
