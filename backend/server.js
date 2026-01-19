@@ -24,6 +24,11 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/product", productRoute);
 app.use("/api/v1/cart", cartRoute);
 
+
+app.get("/", (req, res)=>{
+  return res.send("hello this page")
+})
+
 ConnectDB()
   .then(() => {
     app.listen(PORT, () => {
