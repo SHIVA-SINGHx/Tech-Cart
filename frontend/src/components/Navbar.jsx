@@ -32,7 +32,7 @@ const Navbar = () => {
             }
 
             const res = await axios.post(
-                `http://localhost:8082/api/v1/user/logout`,
+                `https://tech-cart-xsfi.vercel.app/api/v1/user/logout`,
                 {},
                 {
                     headers: {

@@ -15,7 +15,7 @@ const ProductCard = ({ product, loading }) => {
 
   const addToCart = async(productId)=>{
     try {
-      const res = await axios.post(`http://localhost:8082/api/v1/cart/add`, {productId}, {
+      const res = await axios.post(`https://tech-cart-xsfi.vercel.app/api/v1/cart/add`, {productId}, {
         headers:{
           Authorization: `Bearer ${accessToken}`
         }
