@@ -17,6 +17,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setUser, setAccessToken, } from "../redux/userSlice";
+import { API_URL } from "@/lib/api";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -43,8 +44,7 @@ const Login = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
-      const res = await axios.post(`${apiUrl}/api/v1/user/login`, formData)
+      const res = await axios.post(`${API_URL}/api/v1/user/login`, formData)
       
       if (res.data.success) {
         // Save token to localStorage

@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart as addToCartAction } from "@/redux/cartSlice";
+import { API_URL } from "@/lib/api";
 
 const ProductCard = ({ product, loading }) => {
   const { productName, price, productImg } = product;
@@ -15,8 +16,7 @@ const ProductCard = ({ product, loading }) => {
 
   const addToCart = async(productId)=>{
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
-      const res = await axios.post(`${apiUrl}/api/v1/cart/add`, {productId}, {
+      const res = await axios.post(`${API_URL}/api/v1/cart/add`, {productId}, {
         headers:{
           Authorization: `Bearer ${accessToken}`
         }

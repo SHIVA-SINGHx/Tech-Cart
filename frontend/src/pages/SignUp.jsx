@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import axios from "axios";
 import { toast } from "sonner";
+import { API_URL } from "@/lib/api";
 
 
 const SignUp = () => {
@@ -43,8 +44,7 @@ const SignUp = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
-      const res = await axios.post(`${apiUrl}/api/v1/user/register`, formData, {
+      const res = await axios.post(`${API_URL}/api/v1/user/register`, formData, {
         headers: {
           'Content-Type': "application/json"
         }

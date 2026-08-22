@@ -7,6 +7,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, setUser } from '@/redux/userSlice'
+import { API_URL } from '@/lib/api'
 
 
 const Navbar = () => {
@@ -31,9 +32,8 @@ const Navbar = () => {
                 return
             }
 
-            const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
             const res = await axios.post(
-                `${apiUrl}/api/v1/user/logout`,
+                `${API_URL}/api/v1/user/logout`,
                 {},
                 {
                     withCredentials: true,

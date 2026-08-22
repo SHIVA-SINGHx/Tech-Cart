@@ -19,6 +19,7 @@ import userlogo from "@/assets/user.avif";
 import { toast } from "sonner";
 import axios from "axios";
 import { setUser } from "@/redux/userSlice";
+import { API_URL } from "@/lib/api";
 
 const Profile = () => {
   const { user } = useSelector((store) => store.user);
@@ -72,9 +73,8 @@ const Profile = () => {
       if (file) {
         formData.append("file", file);
       }
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
       const res = await axios.put(
-        `${apiUrl}/api/v1/user/update/${userId}`,
+        `${API_URL}/api/v1/user/update/${userId}`,
         formData,
         {
           headers: {

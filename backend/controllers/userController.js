@@ -167,7 +167,6 @@ export const login = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    console.log("User verification status:", existingUser.isVerified); 
 
     if (!existingUser) {
       return res.status(400).json({
@@ -175,6 +174,8 @@ export const login = async (req, res) => {
         message: "User not exists",
       });
     }
+
+    console.log("User verification status:", existingUser.isVerified); 
 
     const isPasswordValid = await bcrypt.compare(
       password,

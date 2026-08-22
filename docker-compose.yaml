@@ -1,17 +1,23 @@
 services:
   frontend:
+    build: ./frontend
     image: tech-cart-frontend
     ports:
       - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8082
     networks:
       - techc-network
 
   backend:
+    build: ./backend
     image: tech-cart-backend
     ports:
       - "8082:8082"
     env_file:
       - backend/.env
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/tech-cart
     networks:
       - techc-network
     depends_on:

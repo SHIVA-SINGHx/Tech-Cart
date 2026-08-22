@@ -12,17 +12,20 @@ export const verifyEmail = (token, email) => {
   });
   const mailConfigrations = {
     from: process.env.MAIL_USER,
-    to: "singhroyai847@gmail.com",
+    to: email,
     subject: "Email Verification",
     text: `Hi! There You have recently visited our website and entered your email.
-    Please follow the given link to verify your email. https://tech-cart-delta.vercel.app/verify/${token}
+    Please follow the given link to verify your email: ${(process.env.FRONTEND_URL || 'http://localhost:5173')}/verify/${token}
     Thanks
     `,
   };
 
   transporter.sendMail(mailConfigrations, function (error, info) {
-    if (error) Error(error);
-    console.log("Email Sent Successfullly.");
+    if (error) {
+      console.error("Email send error:", error.message);
+      return;
+    }
+    console.log("Email Sent Successfully.");
     console.log(info);
   });
 };

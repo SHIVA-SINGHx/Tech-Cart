@@ -7,14 +7,14 @@ import { Trash2, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { setCart } from "@/redux/cartSlice";
+import { API_URL } from "@/lib/api";
 
 const Cart = () => {
   const cart = useSelector((store) => store.cart.cartItems);
   const [quantities, setQuantities] = useState({});
   const dispatch = useDispatch()
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'https://tech-cart-onc2.vercel.app'
-  const API = `${apiUrl}/api/v1/cart`;
+  const API = `${API_URL}/api/v1/cart`;
   const accessToken = localStorage.getItem("accessToken")
 
   useEffect(() => {
